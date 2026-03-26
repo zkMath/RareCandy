@@ -1,9 +1,15 @@
 import { getWalletFromToken } from "./auth";
 
-export async function verifyAdmin(req: Request): Promise<boolean> {
+interface AdminCheckResult {
+  authorized: boolean;
+  walletAddress: string;
+}
+
+export async function verifyAdmin(req: Request): Promise<AdminCheckResult> {
   const wallet = await getWalletFromToken(req);
-  if (!wallet) return false;
+  if (!wallet) return { authorized: false, walletAddress: "" };
 
   const adminAddress = process.env.ADMIN_WALLET_ADDRESS || "";
-  return wallet.toLowerCase() === adminAddress.toLowerCase();
+  const isAdmin = wallet.toLowerCase() === adminAddress.toLowerCase();
+  return { authorized: isAdmin, walletAddress: wallet };
 }

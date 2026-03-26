@@ -7,3 +7,6 @@ export function getSupabaseAdmin() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
+
+// Alias for use in oracle and API modules
+export const createAdminClient = getSupabaseAdmin;
