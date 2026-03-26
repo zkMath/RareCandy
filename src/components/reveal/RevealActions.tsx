@@ -6,6 +6,7 @@ import { useBuybackVault } from "@/hooks/contracts/useBuybackVault";
 import { useMarketplace } from "@/hooks/contracts/useMarketplace";
 import { Countdown } from "@/components/shared/Countdown";
 import { BUYBACK_WINDOW_HOURS } from "@/constants/tiers";
+import { trackBuybackExecuted, trackCardListed } from "@/lib/analytics";
 
 interface RevealActionsProps {
   tokenId: bigint;
@@ -29,6 +30,7 @@ export function RevealActions({
   const buybackDeadlineTs = Math.floor(Date.now() / 1000) + BUYBACK_WINDOW_HOURS * 3600;
 
   const handleBuyback = async () => {
+    trackBuybackExecuted(tokenId.toString(), buybackUsd);
     await executeBuyback(tokenId);
     router.push("/collection");
   };
@@ -36,6 +38,7 @@ export function RevealActions({
   const handleList = async () => {
     const priceNum = parseFloat(listPrice);
     if (isNaN(priceNum) || priceNum <= 0) return;
+    trackCardListed(tokenId.toString(), priceNum);
     await listCard(tokenId, BigInt(Math.round(priceNum * 1_000_000))); // USDC 6 decimals
     router.push("/marketplace");
   };

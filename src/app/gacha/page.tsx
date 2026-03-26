@@ -19,6 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { PullState, Tier } from "@/types";
 import { PULL_PRICE_USDC6, PULL_PRICE_USD } from "@/constants/tiers";
 import { GACHA_MACHINE_ADDRESS } from "@/constants/addresses";
+import { trackPullInitiated } from "@/lib/analytics";
 
 const COOLDOWN_THRESHOLD = 10;
 
@@ -78,6 +79,7 @@ export default function GachaPage() {
     }
 
     // Pull
+    trackPullInitiated(pullCount);
     pull();
     setPullsInSession((n) => n + pullCount);
   }, [
